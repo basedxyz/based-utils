@@ -3,6 +3,23 @@ import Foundation
 
 public class BasedUtils {
 
+    public enum UnitType {
+        case gwei
+        case wei
+    }
+
+    /// Returns a formatted string representation of given wei.
+    ///
+    /// Implemented after viem's formatEther:
+    /// https://github.com/wevm/viem/blob/main/src/utils/unit/formatEther.ts
+    ///
+    /// - Parameter wei: wei as BigInt
+    /// - Parameter unit: the unit type wei or gwei (default: wei)
+    ///
+    public static func formatEther(_ wei: BigInt, _ unit: UnitType = .wei) -> String {
+        return formatUnits(wei, unit.decimals)
+    }
+
     /// Returns a formatted string representation of a BigInt according to the
     /// given decimals.
     ///
@@ -22,6 +39,15 @@ public class BasedUtils {
         fraction = fraction.removeTrailingZeros().removeDecimalPoint()
 
         return "\(negative ? "-" : "")\(integer.isEmpty ? "0" : integer)\(fraction.isEmpty ? "" : ".\(fraction)")"
+    }
+
+}
+
+public extension BasedUtils.UnitType {
+
+    var decimals: Int {
+        if self == .gwei { return 9 }
+        return 18
     }
 
 }
