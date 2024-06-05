@@ -11,11 +11,15 @@ let package = Package(
             name: "BasedUtils",
             targets: ["BasedUtils"]),
     ],
+    dependencies: [
+        .package(url: "https://github.com/attaswift/BigInt", from: "5.3.0")
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "BasedUtils"),
+            name: "BasedUtils",
+            dependencies: ["BigInt"]),
         .testTarget(
             name: "BasedUtilsTests",
             dependencies: ["BasedUtils"]),
