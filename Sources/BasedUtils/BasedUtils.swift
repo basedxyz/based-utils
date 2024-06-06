@@ -41,6 +41,52 @@ public class BasedUtils {
         return "\(negative ? "-" : "")\(integer.isEmpty ? "0" : integer)\(fraction.isEmpty ? "" : ".\(fraction)")"
     }
 
+    /// Returns BigInt representation of a given string and decimals.
+    ///
+    /// Implemented after viem's parseUnits:
+    /// https://github.com/wevm/viem/blob/main/src/utils/unit/parseUnits.ts
+    ///
+    public static func parseUnits(_ value: String, _ decimals: Int) -> BigInt {
+        let components = value.components(separatedBy: ".")
+        var integer = components[0]
+        var fraction = components.count > 1 ? components[1] : "0"
+
+        let negative = integer.starts(with: "-")
+        if negative { integer = integer.slice(from: 1) }
+
+        fraction = fraction.removeTrailingZeros()
+
+        if decimals == 0 {
+            if round(Double(".\(fraction)") ?? 0) == 1 {
+                integer = BigInt.plusOne(integer).description
+            }
+            fraction = ""
+        } else if fraction.count > decimals {
+            let left = fraction.slice(from: 0, to: decimals - 1)
+            let unit = fraction.slice(from: decimals - 1, to: decimals)
+            let right = fraction.slice(from: decimals)
+
+            let rounded = round(Double("\(unit).\(right)") ?? 0)
+            if rounded > 9 {
+                fraction = "\(BigInt.plusOne(left).description)0".padStart(left.count + 1, with: "0")
+            } else {
+                fraction = "\(left)\(Int(rounded))"
+            }
+
+            if fraction.count > decimals {
+                fraction = fraction.slice(from: 1)
+                integer = BigInt.plusOne(integer).description
+            }
+
+            fraction = fraction.slice(from: 0, to: decimals)
+        } else {
+            fraction = fraction.padEnd(decimals, with: "0")
+        }
+
+        let bn = "\(negative ? "-" : "")\(integer)\(fraction)"
+        return BigInt(bn) ?? BigInt(0)
+    }
+
 }
 
 public extension BasedUtils.UnitType {
@@ -54,7 +100,31 @@ public extension BasedUtils.UnitType {
 
 // Private
 
+private extension BigInt {
+
+    init(orZero value: String) {
+        if let bigIntValue = BigInt(value) {
+            self = bigIntValue
+        } else {
+            self = BigInt(0)
+        }
+    }
+
+    static func plusOne(_ value: String) -> BigInt {
+        return BigInt(orZero: value) + BigInt(1)
+    }
+
+}
+
 private extension String {
+
+    func padEnd(_ length: Int, with pad: String = " ") -> String {
+        guard self.count < length else { return self }
+        let padCount = length - self.count
+        let repeatedPad = String(repeating: pad, count: (padCount + pad.count - 1) / pad.count)
+        let endIndex = repeatedPad.index(repeatedPad.startIndex, offsetBy: padCount)
+        return self + repeatedPad[..<endIndex]
+    }
 
     func padStart(_ length: Int, with pad: Character = " ") -> String {
         let padCount = length - self.count
