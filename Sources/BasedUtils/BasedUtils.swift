@@ -41,6 +41,18 @@ public class BasedUtils {
         return "\(negative ? "-" : "")\(integer.isEmpty ? "0" : integer)\(fraction.isEmpty ? "" : ".\(fraction)")"
     }
 
+    /// Returns BigInt representation of given ether.
+    ///
+    /// Implemented after viem's formatEther:
+    /// https://github.com/wevm/viem/blob/main/src/utils/unit/parseEther.ts
+    ///
+    /// - Parameter ether: ether as BigInt
+    /// - Parameter unit: the unit type wei or gwei (default: wei)
+    ///
+    public static func parseEther(_ ether: String, _ unit: UnitType = .wei) -> BigInt {
+        return parseUnits(ether, unit.decimals)
+    }
+
     /// Returns BigInt representation of a given string and decimals.
     ///
     /// Implemented after viem's parseUnits:
@@ -84,7 +96,9 @@ public class BasedUtils {
         }
 
         let bn = "\(negative ? "-" : "")\(integer)\(fraction)"
-        return BigInt(bn) ?? BigInt(0)
+        let result = BigInt(bn) ?? BigInt(0)
+        // Since BigInt seems to allow -0, we check the absolute value and return 0 instead
+        return result.abs == 0 ? BigInt(0) : result
     }
 
 }
@@ -110,6 +124,12 @@ private extension BigInt {
         }
     }
 
+    var abs: BigInt {
+        var absoluteValue = self
+        absoluteValue.sign = Sign.plus
+        return absoluteValue
+    }
+
     static func plusOne(_ value: String) -> BigInt {
         return BigInt(orZero: value) + BigInt(1)
     }
@@ -133,10 +153,7 @@ private extension String {
     }
 
     func removeTrailingZeros() -> String {
-        let regex = try! NSRegularExpression(pattern: "(0+)$")
-        let range = NSRange(location: 0, length: self.utf16.count)
-        let trimmedString = regex.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "")
-        return trimmedString
+        return self.replacingOccurrences(of: "(0+)$", with: "", options: .regularExpression)
     }
 
     func removeDecimalPoint() -> String {
