@@ -21,6 +21,19 @@ formatUnits
 BasedUtils.formatUnits(BigInt("6900000000000"), 10) // "69"
 ```
 
+parseEther
+
+```swift
+BasedUtils.parseEther("1") // BigInt("1000000000000000000")
+BasedUtils.parseEther("1", .gwei) // BigInt("1000000000")
+```
+
+parseUnits
+
+```swift
+BasedUtils.parseUnits("40", 18) // BigInt("40000000000000000000")
+```
+
 isAddress
 
 ```swift
