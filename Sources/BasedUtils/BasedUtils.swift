@@ -43,10 +43,10 @@ public class BasedUtils {
 
     /// Returns BigInt representation of given ether.
     ///
-    /// Implemented after viem's formatEther:
+    /// Implemented after viem's parseEther:
     /// https://github.com/wevm/viem/blob/main/src/utils/unit/parseEther.ts
     ///
-    /// - Parameter ether: ether as BigInt
+    /// - Parameter ether: ether as String
     /// - Parameter unit: the unit type wei or gwei (default: wei)
     ///
     public static func parseEther(_ ether: String, _ unit: UnitType = .wei) -> BigInt {
