@@ -58,6 +58,17 @@ let address1 = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
 BasedUtils.shortenAddress(address1) // "0xd8dA...6045"
 ```
 
+### Extensions
+
+String
+```swift
+let address = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+let hash = "d8dA6B"
+hash.addHexPrefix() // "0xd8dA6B"
+address.addHexPrefix() // "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" (only adds if it doesn't exist)
+address.removeHexPrefix() // "d8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+```
+
 ## Dependencies
 
 - [BigInt](https://github.com/attaswift/BigInt)
