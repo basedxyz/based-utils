@@ -60,7 +60,15 @@ BasedUtils.shortenAddress(address1) // "0xd8dA...6045"
 
 ### Extensions
 
+Data
+
+```swift
+let data = "https://example.com".data(using: .utf8)!
+data.base64UrlEncode() // "aHR0cHM6Ly9leGFtcGxlLmNvbQ"
+```
+
 String
+
 ```swift
 let address = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
 let hash = "d8dA6B"
