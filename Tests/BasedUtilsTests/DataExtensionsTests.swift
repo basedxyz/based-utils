@@ -23,4 +23,11 @@ final class DataExtensionsTests: XCTestCase {
         XCTAssertEqual(emptyString.base64UrlEncode(), "")
     }
 
+    func testFromHex() throws {
+        XCTAssertEqual(Data.fromHex("0x"), Data())
+        XCTAssertEqual(Data.fromHex("0x61"), Data([97]))
+        XCTAssertEqual(Data.fromHex("0x48656c6c6f20576f726c6421"), Data([72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 33]))
+        XCTAssertEqual(Data.fromHex("0x420fggf11a"), nil)
+    }
+
 }
