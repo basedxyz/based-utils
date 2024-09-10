@@ -10,14 +10,22 @@ import Foundation
 public extension String {
 
     func addHexPrefix() -> String {
-        if !self.hasPrefix("0x") {
+        if !hasHexPrefix {
             return "0x" + self
         }
         return self
     }
 
+    var hasHexPrefix: Bool {
+        return self.hasPrefix("0x")
+    }
+
+    func isHex() -> Bool {
+        return hasHexPrefix
+    }
+
     func removeHexPrefix() -> String {
-        if self.hasPrefix("0x") {
+        if hasHexPrefix {
             let indexStart = self.index(self.startIndex, offsetBy: 2)
             return String(self[indexStart...])
         }
